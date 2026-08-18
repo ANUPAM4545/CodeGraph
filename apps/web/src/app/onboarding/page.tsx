@@ -49,7 +49,7 @@ export default function OnboardingPage() {
               </div>
               <div>
                 <h2 className="text-2xl font-bold tracking-tight">Welcome to CodeGraph</h2>
-                <p className="text-muted mt-2 text-sm">Let's set up your workspace to start exploring your codebase architecture.</p>
+                <p className="text-muted mt-2 text-sm">Let&apos;s set up your workspace to start exploring your codebase architecture.</p>
               </div>
               <Button className="w-full" onClick={() => setStep(1)}>Get Started</Button>
             </div>
