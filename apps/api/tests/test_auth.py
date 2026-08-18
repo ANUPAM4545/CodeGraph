@@ -9,7 +9,10 @@ import hashlib
 
 client = TestClient(app)
 
-def test_github_login_generates_state():
+def test_github_login_generates_state(mocker):
+    mock_redis = mocker.MagicMock()
+    mocker.patch("src.api.v1.auth.get_redis_client", return_value=mock_redis)
+    
     response = client.get("/api/v1/auth/login/github")
     assert response.status_code == 200
     data = response.json()
