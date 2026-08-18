@@ -1,0 +1,11 @@
+{
+  "venvPath": ".",
+  "venv": ".venv",
+  "extraPaths": [
+    "apps/api",
+    "apps/api/src",
+    "services/analysis"
+  ],
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none"
+}

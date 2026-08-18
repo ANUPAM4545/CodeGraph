@@ -1,0 +1,11 @@
+{
+  "search_paths": [
+    ".",
+    "apps/api",
+    "apps/api/src",
+    "services/analysis"
+  ],
+  "site_packages": ".venv/lib/python3.9/site-packages",
+  "ignore_missing_imports": true,
+  "disabled_rules": ["missing-import", "missing-module-source"]
+}
