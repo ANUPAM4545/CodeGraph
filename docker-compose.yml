@@ -41,6 +41,7 @@ services:
       - GITHUB_TOKEN=${GITHUB_TOKEN:-}
       - JWT_SECRET=${JWT_SECRET:-super_secret_jwt_key_change_in_production}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY:-super_secret_32_byte_encryption_key_change_in_prod=}
+      - ALLOW_ANONYMOUS_DEV=${ALLOW_ANONYMOUS_DEV:-true}
     depends_on:
       postgres:
         condition: service_healthy
