@@ -16,7 +16,13 @@ import {
   CheckCircle2, 
   Sparkles,
   ArrowRight,
-  GitBranch
+  GitBranch,
+  Globe,
+  Database,
+  Terminal,
+  Activity,
+  Orbit,
+  Cpu
 } from 'lucide-react';
 
 interface PreviewTab {
@@ -37,10 +43,10 @@ const TABS: PreviewTab[] = [
 ];
 
 export default function ProductPreview() {
-  const [activeTabId, setActiveTabId] = useState('graph');
+  const [activeTabId, setActiveTabId] = useState('repo');
   const [isPaused, setIsPaused] = useState(false);
 
-  // Auto-cycle through tabs (pauses on hover)
+  // Auto-advance through tabs every 4.5 seconds (pauses on user hover)
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
@@ -52,7 +58,7 @@ export default function ProductPreview() {
     return () => clearInterval(timer);
   }, [isPaused]);
 
-  const activeTab = TABS.find((t) => t.id === activeTabId) || TABS[2];
+  const activeTab = TABS.find((t) => t.id === activeTabId) || TABS[0];
 
   return (
     <section id="preview" className="py-24 md:py-32 bg-surface/40 border-b border-border relative overflow-hidden">
@@ -69,7 +75,7 @@ export default function ProductPreview() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-white text-[11px] font-mono font-bold text-neutral-800 shadow-2xs">
             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
             <span>PLATFORM PREVIEW</span>
@@ -84,7 +90,7 @@ export default function ProductPreview() {
 
         {/* Top Feature Switcher Pills */}
         <div 
-          className="flex justify-center mb-10 overflow-x-auto pb-2 scrollbar-none"
+          className="flex justify-center mb-8 overflow-x-auto pb-2 scrollbar-none"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -111,7 +117,7 @@ export default function ProductPreview() {
           </div>
         </div>
 
-        {/* Large Browser-Style Product Showcase Container */}
+        {/* Large Browser-Style Product Showcase Window */}
         <div 
           className="rounded-3xl border border-border bg-white shadow-2xl overflow-hidden max-w-6xl mx-auto font-mono text-xs"
           onMouseEnter={() => setIsPaused(true)}
@@ -132,162 +138,433 @@ export default function ProductPreview() {
             </div>
 
             <div className="flex items-center gap-2 text-muted text-[11px]">
-              <span className="hidden sm:inline">{activeTab.title}</span>
+              <span className="hidden sm:inline font-bold text-foreground">{activeTab.title}</span>
             </div>
           </div>
 
-          {/* Dynamic Content Viewport based on selected tab */}
-          <div className="grid grid-cols-1 md:grid-cols-12 min-h-[440px] bg-white">
-            
-            {/* Left Sidebar: Repository Tree (3 cols) */}
-            <div className="hidden md:block md:col-span-3 border-r border-border p-5 bg-neutral-50/60 space-y-4">
-              <div className="flex items-center justify-between text-[11px] pb-2 border-b border-border">
-                <span className="font-extrabold text-foreground">PROJECT TREE</span>
-                <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
-                  DAG CLEAN
-                </span>
-              </div>
-
-              <div className="space-y-2 text-[11px]">
-                <div className="space-y-1">
-                  <div className="font-bold text-foreground flex items-center gap-1.5">
-                    <FolderGit2 className="w-3.5 h-3.5 text-neutral-700" />
-                    <span>marketplace-engine/</span>
-                  </div>
-                  <div className="pl-4 space-y-1 text-muted">
-                    <div className="p-1 rounded bg-neutral-200/80 text-foreground font-bold flex items-center gap-1.5">
-                      <FileCode className="w-3 h-3 text-blue-500" />
-                      <span>src/services/</span>
-                    </div>
-                    <div className="pl-4 space-y-1">
-                      <div className="text-foreground font-bold">dispute.ts</div>
-                      <div>arbitration.ts</div>
-                      <div>payout.ts</div>
-                    </div>
-                    <div className="p-1 rounded flex items-center gap-1.5">
-                      <FileCode className="w-3 h-3 text-purple-500" />
-                      <span>src/domain/</span>
-                    </div>
-                    <div className="p-1 rounded flex items-center gap-1.5">
-                      <FileCode className="w-3 h-3 text-emerald-500" />
-                      <span>src/db/</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-4 border-t border-border space-y-1.5 text-[10px] text-muted">
-                <div>Files Analyzed: <strong className="text-foreground font-bold">148</strong></div>
-                <div>Topological Edges: <strong className="text-foreground font-bold">3,890</strong></div>
-                <div>Risk Hotspots: <strong className="text-red-600 font-bold">0 Detected</strong></div>
-              </div>
-            </div>
-
-            {/* Center Canvas: Interactive Architecture / Graph (6 cols) */}
-            <div className="md:col-span-6 relative h-[440px] bg-dot-pattern flex items-center justify-center p-6 overflow-hidden border-b md:border-b-0 md:border-r border-border select-none">
+          {/* Dynamic Content Viewport with Individual Dedicated Design for Each Tab */}
+          <div className="min-h-[460px] bg-white">
+            <AnimatePresence mode="wait">
               
-              {/* Dynamic SVG Visualizer Grid */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                <circle cx="50%" cy="50%" r="130" stroke="#EDEDED" strokeWidth="1.5" strokeDasharray="4 4" fill="none" />
-                <circle cx="50%" cy="50%" r="70" stroke="#E5E5E5" strokeWidth="1" fill="none" />
-                <line x1="50%" y1="50%" x2="25%" y2="25%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
-                <line x1="50%" y1="50%" x2="75%" y2="25%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
-                <line x1="50%" y1="50%" x2="50%" y2="82%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
-              </svg>
+              {/* TAB 1: REPOSITORY & CONCRETE AST EXTRACTION */}
+              {activeTabId === 'repo' && (
+                <motion.div
+                  key="repo"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 min-h-[460px]"
+                >
+                  {/* Left Directory Tree (4 cols) */}
+                  <div className="md:col-span-4 border-r border-border p-5 bg-neutral-50/60 space-y-4">
+                    <div className="flex items-center justify-between text-[11px] pb-2 border-b border-border">
+                      <span className="font-extrabold text-foreground">DIRECTORY TREE</span>
+                      <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        PARSED 100%
+                      </span>
+                    </div>
 
-              {/* Node 2: Risk Function */}
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="absolute left-[10%] top-[15%] cursor-pointer p-3 rounded-2xl border border-purple-200 bg-purple-50/80 shadow-xs"
-              >
-                <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
-                  <Code2 className="w-3.5 h-3.5 text-purple-600" />
-                  <span>calculateRiskScore()</span>
-                </div>
-                <div className="text-[10px] text-muted">Calls DisputeService</div>
-              </motion.div>
+                    <div className="space-y-2 text-[11px]">
+                      <div className="font-bold text-foreground flex items-center gap-1.5">
+                        <FolderGit2 className="w-3.5 h-3.5 text-neutral-700" />
+                        <span>marketplace-engine/</span>
+                      </div>
+                      <div className="pl-4 space-y-1 text-muted">
+                        <div className="p-1 rounded bg-neutral-200/80 text-foreground font-bold flex items-center gap-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-blue-600" />
+                          <span>src/services/dispute.ts</span>
+                        </div>
+                        <div className="p-1 rounded flex items-center gap-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-purple-600" />
+                          <span>src/domain/arbitration.ts</span>
+                        </div>
+                        <div className="p-1 rounded flex items-center gap-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>src/db/ledger.ts</span>
+                        </div>
+                        <div className="p-1 rounded flex items-center gap-1.5">
+                          <FileCode className="w-3.5 h-3.5 text-amber-600" />
+                          <span>src/api/routes.py</span>
+                        </div>
+                      </div>
+                    </div>
 
-              {/* Node 3: Ledger Client */}
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="absolute right-[10%] top-[18%] cursor-pointer p-3 rounded-2xl border border-emerald-200 bg-emerald-50/80 shadow-xs"
-              >
-                <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
-                  <Box className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>LedgerClient</span>
-                </div>
-                <div className="text-[10px] text-muted">PostgreSQL Driver</div>
-              </motion.div>
-
-              {/* Node 1: Central Target Class (DisputeService) */}
-              <motion.div 
-                animate={{ scale: [1, 1.03, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-                className="cursor-pointer p-4 sm:p-5 rounded-2xl border-2 border-black bg-white shadow-xl ring-4 ring-black/5 z-10"
-              >
-                <div className="flex items-center gap-2 font-bold text-sm text-foreground">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>DisputeService</span>
-                </div>
-                <div className="text-[11px] text-muted mt-0.5">Class · Engine Subsystem</div>
-                <div className="mt-2 pt-2 border-t border-border flex items-center justify-between text-[10px] text-muted gap-3">
-                  <span>Fan-in: 14</span>
-                  <span className="text-red-600 font-bold">HIGH RISK</span>
-                </div>
-              </motion.div>
-
-              {/* Node 4: FastAPI Router */}
-              <motion.div 
-                whileHover={{ scale: 1.05 }}
-                className="absolute bottom-[8%] cursor-pointer p-3 rounded-2xl border border-blue-200 bg-blue-50/80 shadow-xs"
-              >
-                <div className="flex items-center gap-1.5 font-bold text-xs text-foreground">
-                  <FileCode className="w-3.5 h-3.5 text-blue-600" />
-                  <span>dispute_router.py</span>
-                </div>
-                <div className="text-[10px] text-muted">POST /api/v1/disputes</div>
-              </motion.div>
-
-            </div>
-
-            {/* Right Details Panel (3 cols) */}
-            <div className="md:col-span-3 p-5 bg-neutral-50/40 flex flex-col justify-between space-y-4">
-              <div className="space-y-3">
-                <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
-                  Node Telemetry
-                </div>
-
-                <div className="p-4 rounded-2xl border border-border bg-white shadow-2xs space-y-2.5">
-                  <div className="font-extrabold text-foreground text-xs">DisputeService.ts</div>
-                  <div className="text-[10px] text-muted">src/services/dispute.ts</div>
-                  <div className="pt-2 border-t border-border flex items-center justify-between text-[10px]">
-                    <span className="text-muted">AST Depth:</span>
-                    <strong className="text-foreground">Level 4</strong>
+                    <div className="pt-4 border-t border-border space-y-1 text-[10px] text-muted">
+                      <div>Parser: <strong className="text-foreground">Tree-sitter TSX & Python</strong></div>
+                      <div>Symbol Nodes: <strong className="text-foreground">1,452 AST Tokens</strong></div>
+                    </div>
                   </div>
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-muted">Direct Callers:</span>
-                    <strong className="text-foreground">14 Methods</strong>
-                  </div>
-                  <div className="flex items-center justify-between text-[10px]">
-                    <span className="text-muted">Grounded Accuracy:</span>
-                    <strong className="text-emerald-600 font-bold">99.4%</strong>
-                  </div>
-                </div>
 
-                <div className="p-3.5 rounded-2xl border border-border bg-white shadow-2xs space-y-1.5">
-                  <div className="text-[10px] text-muted uppercase font-bold">Cypher Node Match</div>
-                  <div className="text-[10px] text-purple-700 font-mono bg-purple-50 p-2 rounded-lg leading-tight">
-                    (:Class &#123;name: &quot;DisputeService&quot;&#125;)
+                  {/* Center Concrete AST Hierarchy (5 cols) */}
+                  <div className="md:col-span-5 p-6 border-b md:border-b-0 md:border-r border-border space-y-4">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border flex items-center justify-between">
+                      <span>Concrete AST Structure</span>
+                      <span className="text-[10px] text-purple-600 font-bold">src/services/dispute.ts</span>
+                    </div>
+
+                    <div className="space-y-2 text-xs">
+                      <div className="p-3 rounded-2xl border border-purple-200 bg-purple-50/50 space-y-1">
+                        <div className="font-bold text-purple-900 flex items-center gap-1.5">
+                          <Code2 className="w-3.5 h-3.5 text-purple-600" />
+                          <span>ClassDeclaration: DisputeOrchestrator</span>
+                        </div>
+                        <div className="text-[10px] text-purple-700 pl-5">Line 14–112 · Exported Class</div>
+                      </div>
+
+                      <div className="pl-4 space-y-2">
+                        <div className="p-2.5 rounded-xl border border-blue-200 bg-blue-50/50 space-y-0.5">
+                          <div className="font-bold text-blue-900 flex items-center gap-1.5">
+                            <Code2 className="w-3 h-3 text-blue-600" />
+                            <span>MethodDefinition: executeResolution()</span>
+                          </div>
+                          <div className="text-[10px] text-blue-700 pl-4">Line 24–68 · Async Public Method</div>
+                        </div>
+
+                        <div className="pl-4">
+                          <div className="p-2 rounded-lg border border-emerald-200 bg-emerald-50/50">
+                            <div className="font-bold text-emerald-900 text-[11px] flex items-center gap-1.5">
+                              <Box className="w-3 h-3 text-emerald-600" />
+                              <span>CallExpression: LedgerClient.reconcile()</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
 
-              <div className="text-[10px] text-muted font-mono flex items-center justify-between pt-2 border-t border-border">
-                <span>Neo4j 5 ACID</span>
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-              </div>
-            </div>
+                  {/* Right File Telemetry (3 cols) */}
+                  <div className="md:col-span-3 p-5 bg-neutral-50/40 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      AST Metrics
+                    </div>
+                    <div className="p-3.5 rounded-2xl border border-border bg-white space-y-2 shadow-2xs">
+                      <div className="text-xs font-bold text-foreground">dispute.ts</div>
+                      <div className="text-[10px] text-muted">Lines of Code: <strong className="text-foreground">184 LOC</strong></div>
+                      <div className="text-[10px] text-muted">Methods: <strong className="text-foreground">4 Defined</strong></div>
+                      <div className="text-[10px] text-muted">Imports: <strong className="text-foreground">3 External</strong></div>
+                      <div className="text-[10px] text-emerald-600 font-bold pt-1 border-t border-border">Syntax Validated</div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
+              {/* TAB 2: ARCHITECTURE & MODULE BOUNDARIES */}
+              {activeTabId === 'arch' && (
+                <motion.div
+                  key="arch"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 min-h-[460px]"
+                >
+                  {/* Subsystems List (4 cols) */}
+                  <div className="md:col-span-4 border-r border-border p-5 bg-neutral-50/60 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      Architectural Subsystems (4)
+                    </div>
+                    <div className="space-y-2 text-xs">
+                      <div className="p-3 rounded-2xl border border-black bg-white shadow-xs space-y-0.5">
+                        <div className="font-bold text-foreground">Engine Subsystem</div>
+                        <div className="text-[10px] text-muted">Core orchestration & arbitration</div>
+                      </div>
+                      <div className="p-3 rounded-2xl border border-border bg-white space-y-0.5">
+                        <div className="font-bold text-foreground">API Layer</div>
+                        <div className="text-[10px] text-muted">FastAPI & REST routing</div>
+                      </div>
+                      <div className="p-3 rounded-2xl border border-border bg-white space-y-0.5">
+                        <div className="font-bold text-foreground">Persistence ORM</div>
+                        <div className="text-[10px] text-muted">PostgreSQL & SQLAlchemy</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Architecture Diagram Canvas (5 cols) */}
+                  <div className="md:col-span-5 p-6 border-b md:border-b-0 md:border-r border-border space-y-4 flex flex-col justify-between">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border flex items-center justify-between">
+                      <span>Module Boundaries Map</span>
+                      <span className="text-[10px] text-emerald-600 font-bold">STRICT DAG</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 my-auto">
+                      <div className="p-4 rounded-2xl border-2 border-purple-400 bg-purple-50/60 text-center space-y-1">
+                        <div className="font-extrabold text-foreground text-xs">Engine Core</div>
+                        <div className="text-[10px] text-purple-700">14 Inbound Calls</div>
+                      </div>
+                      <div className="p-4 rounded-2xl border border-border bg-neutral-50 text-center space-y-1">
+                        <div className="font-extrabold text-foreground text-xs">API Router</div>
+                        <div className="text-[10px] text-muted">5 Endpoints</div>
+                      </div>
+                      <div className="p-4 rounded-2xl border border-border bg-neutral-50 text-center space-y-1">
+                        <div className="font-extrabold text-foreground text-xs">Persistence</div>
+                        <div className="text-[10px] text-muted">9 ORM Models</div>
+                      </div>
+                      <div className="p-4 rounded-2xl border border-border bg-neutral-50 text-center space-y-1">
+                        <div className="font-extrabold text-foreground text-xs">External SDKs</div>
+                        <div className="text-[10px] text-muted">Stripe & Neo4j</div>
+                      </div>
+                    </div>
+
+                    <div className="text-[10px] text-muted font-sans text-center">
+                      Auto-clustered via dependency graph analysis without manual configuration.
+                    </div>
+                  </div>
+
+                  {/* Coupling Metrics (3 cols) */}
+                  <div className="md:col-span-3 p-5 bg-neutral-50/40 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      Coupling Telemetry
+                    </div>
+                    <div className="p-3.5 rounded-2xl border border-border bg-white space-y-2">
+                      <div className="text-[10px] text-muted">Afferent Coupling: <strong className="text-foreground">14</strong></div>
+                      <div className="text-[10px] text-muted">Efferent Coupling: <strong className="text-foreground">3</strong></div>
+                      <div className="text-[10px] text-muted">Instability Index: <strong className="text-foreground">0.18</strong></div>
+                      <div className="text-[10px] text-emerald-600 font-bold pt-1 border-t border-border">0 Circular Loops</div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* TAB 3: GRAPH EXPLORER (NEO4J PROPERTY GRAPH) */}
+              {activeTabId === 'graph' && (
+                <motion.div
+                  key="graph"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 min-h-[460px]"
+                >
+                  {/* Left Sidebar (3 cols) */}
+                  <div className="md:col-span-3 border-r border-border p-4 bg-neutral-50/60 space-y-3">
+                    <div className="text-[10px] text-muted uppercase font-bold tracking-wider">
+                      Cypher Query Filter
+                    </div>
+                    <div className="p-2.5 rounded-xl bg-neutral-900 text-purple-300 text-[10px] leading-relaxed">
+                      MATCH (c:Class &#123;name: &quot;DisputeService&quot;&#125;) RETURN c
+                    </div>
+                    <div className="pt-2 border-t border-border space-y-1 text-[10px] text-muted">
+                      <div>Nodes: <strong className="text-foreground">1,452</strong></div>
+                      <div>Relationships: <strong className="text-foreground">3,890</strong></div>
+                      <div>Query Latency: <strong className="text-emerald-600">0.4ms</strong></div>
+                    </div>
+                  </div>
+
+                  {/* Center Graph Canvas (6 cols) */}
+                  <div className="md:col-span-6 relative h-[460px] bg-dot-pattern flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-border select-none overflow-hidden">
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                      <line x1="50%" y1="50%" x2="20%" y2="20%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                      <line x1="50%" y1="50%" x2="80%" y2="20%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                      <line x1="50%" y1="50%" x2="50%" y2="82%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                    </svg>
+
+                    <div className="absolute left-[10%] top-[15%] p-2.5 rounded-xl border border-purple-200 bg-purple-50 font-bold text-[11px]">
+                      calculateRiskScore()
+                    </div>
+                    <div className="absolute right-[10%] top-[15%] p-2.5 rounded-xl border border-emerald-200 bg-emerald-50 font-bold text-[11px]">
+                      LedgerClient
+                    </div>
+                    <div className="p-4 rounded-2xl border-2 border-black bg-white shadow-xl ring-4 ring-black/5 z-10 text-center">
+                      <div className="font-bold text-sm text-foreground flex items-center gap-1.5 justify-center">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>DisputeService</span>
+                      </div>
+                      <div className="text-[10px] text-muted mt-0.5">Class · Engine Subsystem</div>
+                      <div className="text-[9px] text-red-600 font-bold mt-1">HIGH RISK (Fan-in: 14)</div>
+                    </div>
+                    <div className="absolute bottom-[10%] p-2.5 rounded-xl border border-blue-200 bg-blue-50 font-bold text-[11px]">
+                      dispute_router.py
+                    </div>
+                  </div>
+
+                  {/* Right Inspector (3 cols) */}
+                  <div className="md:col-span-3 p-5 bg-neutral-50/40 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      Node Properties
+                    </div>
+                    <div className="p-3.5 rounded-2xl border border-border bg-white space-y-2">
+                      <div className="text-xs font-bold text-foreground">DisputeService</div>
+                      <div className="text-[10px] text-muted">File: src/services/dispute.ts</div>
+                      <div className="text-[10px] text-muted">AST Depth: 4</div>
+                      <div className="text-[10px] text-emerald-600 font-bold pt-1 border-t border-border">ACID Committed</div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* TAB 4: REPOSITORY INTELLIGENCE (AUTOMATED SYNTHESIS) */}
+              {activeTabId === 'intel' && (
+                <motion.div
+                  key="intel"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="p-6 sm:p-8 space-y-6"
+                >
+                  <div className="flex items-center justify-between pb-4 border-b border-border">
+                    <div>
+                      <h3 className="font-extrabold text-base text-foreground">
+                        Synthesized Executive Intelligence
+                      </h3>
+                      <p className="text-xs text-muted font-sans mt-0.5">
+                        Derived purpose, database models, and active REST API routes
+                      </p>
+                    </div>
+                    <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-bold text-xs">
+                      HEALTH: 96/100
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="p-4 rounded-2xl border border-border bg-neutral-50/50 space-y-1.5">
+                      <div className="font-bold text-xs text-foreground uppercase">Purpose</div>
+                      <p className="text-xs font-sans text-muted leading-relaxed">
+                        Arbitration engine handling dynamic dispute state transitions and balance reconciliation.
+                      </p>
+                    </div>
+                    <div className="p-4 rounded-2xl border border-border bg-neutral-50/50 space-y-1.5">
+                      <div className="font-bold text-xs text-foreground uppercase">Discovered APIs</div>
+                      <div className="text-[11px] text-muted space-y-1">
+                        <div>POST /api/v1/disputes</div>
+                        <div>POST /api/v1/ledger/reconcile</div>
+                      </div>
+                    </div>
+                    <div className="p-4 rounded-2xl border border-border bg-neutral-50/50 space-y-1.5">
+                      <div className="font-bold text-xs text-foreground uppercase">DB Schemas</div>
+                      <div className="text-[11px] text-muted space-y-1">
+                        <div>DisputeRecord (PostgreSQL)</div>
+                        <div>LedgerEntry (PostgreSQL)</div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* TAB 5: AI ASSISTANT (GRAPH-RAG COPILOT) */}
+              {activeTabId === 'ai' && (
+                <motion.div
+                  key="ai"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 min-h-[460px]"
+                >
+                  <div className="md:col-span-7 p-6 border-b md:border-b-0 md:border-r border-border space-y-4">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border flex items-center justify-between">
+                      <span>Source-Grounded AI Copilot</span>
+                      <span className="text-[10px] text-emerald-600 font-bold">100% GROUNDED</span>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="bg-black text-white p-3.5 rounded-2xl rounded-br-none space-y-1">
+                        <div className="text-[9px] text-neutral-400 font-bold uppercase">User Prompt</div>
+                        <div className="text-xs font-sans">
+                          &quot;How does dispute resolution reconcile double-entry ledger balances?&quot;
+                        </div>
+                      </div>
+
+                      <div className="bg-neutral-50 border border-border p-4 rounded-2xl rounded-tl-none space-y-2">
+                        <div className="text-[10px] text-purple-700 font-bold">CodeGraph Reasoning</div>
+                        <p className="text-xs font-sans text-foreground leading-relaxed">
+                          `DisputeOrchestrator` invokes `LedgerClient.reconcile()` inside an ACID PostgreSQL transaction during the `SETTLED` state transition.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-5 p-6 bg-neutral-50/40 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      Verified Citations
+                    </div>
+                    <div className="space-y-2">
+                      <div className="p-3 rounded-xl border border-border bg-white">
+                        <div className="font-bold text-foreground text-xs">src/services/dispute.ts</div>
+                        <div className="text-[10px] text-muted">Lines 48–112 · DisputeOrchestrator</div>
+                      </div>
+                      <div className="p-3 rounded-xl border border-border bg-white">
+                        <div className="font-bold text-foreground text-xs">src/db/ledger.ts</div>
+                        <div className="text-[10px] text-muted">Lines 76–134 · LedgerClient.reconcile()</div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* TAB 6: 3D UNIVERSE (SPATIAL WEBGL EXPLORER) */}
+              {activeTabId === 'universe' && (
+                <motion.div
+                  key="universe"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="grid grid-cols-1 md:grid-cols-12 min-h-[460px]"
+                >
+                  <div className="md:col-span-8 relative h-[460px] bg-neutral-950 text-white flex items-center justify-center p-6 border-b md:border-b-0 md:border-r border-neutral-800 overflow-hidden select-none">
+                    <div 
+                      className="absolute inset-0 opacity-20 pointer-events-none" 
+                      style={{ 
+                        backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`, 
+                        backgroundSize: '28px 28px' 
+                      }} 
+                    />
+
+                    {/* Concentric Orbits */}
+                    <div className="relative w-72 h-72 rounded-full border border-neutral-800 flex items-center justify-center">
+                      <div className="absolute inset-10 rounded-full border border-neutral-800/60" />
+                      
+                      {/* Sun Core */}
+                      <div className="w-16 h-16 rounded-full bg-neutral-800 border border-neutral-600 flex items-center justify-center text-center shadow-2xl z-10">
+                        <Cuboid className="w-6 h-6 text-white" />
+                      </div>
+
+                      {/* Orbiting Planet 1 */}
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      >
+                        <div style={{ transform: 'translate(100px, 0)' }} className="p-2 rounded-xl bg-neutral-900 border border-neutral-700 text-[10px] text-emerald-400 font-bold whitespace-nowrap">
+                          ● Engine Core
+                        </div>
+                      </motion.div>
+
+                      {/* Orbiting Planet 2 */}
+                      <motion.div
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 22, repeat: Infinity, ease: 'linear' }}
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      >
+                        <div style={{ transform: 'translate(-120px, 0)' }} className="p-2 rounded-xl bg-neutral-900 border border-neutral-700 text-[10px] text-purple-400 font-bold whitespace-nowrap">
+                          ● Rules Engine
+                        </div>
+                      </motion.div>
+                    </div>
+
+                    <div className="absolute bottom-4 left-6 right-6 p-2.5 rounded-xl bg-neutral-900/90 border border-neutral-800 flex items-center justify-between text-[10px] text-neutral-300">
+                      <span>Density-based spatial positioning</span>
+                      <span>Three.js / WebGL</span>
+                    </div>
+                  </div>
+
+                  <div className="md:col-span-4 p-5 bg-neutral-50/40 space-y-3">
+                    <div className="text-[11px] font-extrabold text-foreground uppercase tracking-wider pb-2 border-b border-border">
+                      Spatial HUD Controls
+                    </div>
+                    <div className="p-3.5 rounded-2xl border border-border bg-white space-y-2">
+                      <div className="text-[10px] text-muted">Selected Body: <strong className="text-foreground">Engine Core</strong></div>
+                      <div className="text-[10px] text-muted">Orbital Radius: <strong className="text-foreground">100px</strong></div>
+                      <div className="text-[10px] text-muted">Density Score: <strong className="text-foreground">0.94</strong></div>
+                      <div className="text-[10px] text-blue-600 font-bold pt-1 border-t border-border">Planetary Zoom 1.0x</div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+            </AnimatePresence>
           </div>
 
         </div>
