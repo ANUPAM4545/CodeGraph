@@ -1,114 +1,110 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { 
   Network, 
-  BrainCircuit, 
-  ActivitySquare, 
-  Layers, 
-  Cuboid, 
+  Database, 
+  Briefcase, 
+  ShieldCheck, 
+  CloudUpload, 
+  Activity,
+  Code2,
+  Lock,
   RefreshCw,
-  ArrowUpRight 
+  Cpu
 } from 'lucide-react';
 
-const FEATURES = [
+const ENTERPRISE_FEATURES = [
   {
     icon: Network,
-    tag: 'GRAPH TOPOLOGY',
-    title: 'Knowledge Graph Engine',
-    description: 'Builds an exact AST-level graph of files, classes, functions, and external packages with typed edges: CONTAINS, DEFINES, IMPORTS, CALLS, and INHERITS.',
-    bulletPoints: ['Tree-sitter parser extraction', 'Neo4j property graph storage', 'Zero AST ambiguity'],
+    title: 'Dynamic AST Engine',
+    description: 'Parse and extract lossless AST syntax trees across multi-language repositories in real-time.',
+    category: 'AST ANALYSIS'
   },
   {
-    icon: BrainCircuit,
-    tag: 'HYBRID RETRIEVAL',
-    title: 'Grounded AI Assistant',
-    description: 'Combines multi-hop Cypher graph traversals with Qdrant vector search. Every answer cites verified file paths and line numbers without hallucinations.',
-    bulletPoints: ['Graph-RAG topological context', 'Exact source line citations', 'Confidence evidence scoring'],
+    icon: Database,
+    title: 'Knowledge Graph DB',
+    description: 'Store canonical nodes and typed edges (CALLS, IMPORTS, INHERITS) in Neo4j with ACID compliance.',
+    category: 'GRAPH DATABASE'
   },
   {
-    icon: ActivitySquare,
-    tag: 'BLAST RADIUS',
-    title: 'Change Impact Simulation',
-    description: 'Simulates multi-depth upstream callers, downstream dependencies, and affected subsystems before modifying code or merging pull requests.',
-    bulletPoints: ['Multi-hop caller propagation', '0–100 risk scoring index', 'Regression prevention'],
+    icon: Briefcase,
+    title: 'Workspace Isolation',
+    description: 'Organize repositories, versions, and teams into secure, cryptographically isolated workspaces.',
+    category: 'MULTI-TENANCY'
   },
   {
-    icon: Layers,
-    tag: 'MODULAR ARCHITECTURE',
-    title: 'Architecture Intelligence',
-    description: 'Automatically discovers subsystems, module boundaries, architectural coupling hotspots, and circular dependency loops across your repository.',
-    bulletPoints: ['Subsystem auto-clustering', 'Cyclic dependency detection', 'Coupling ratio analytics'],
+    icon: ShieldCheck,
+    title: 'Role-Based Access',
+    description: 'Assign granular Admin, Architect, Developer, and Viewer roles with hashed API key permissions.',
+    category: 'SECURITY'
   },
   {
-    icon: Cuboid,
-    tag: 'SPATIAL VISUALIZATION',
-    title: '3D Codebase Universe',
-    description: 'Explore entire multi-repo ecosystems spatially in WebGL. Planetary bodies cluster around core modules with density-based gravitational positioning.',
-    bulletPoints: ['React Three Fiber engine', 'Architecture & dependency views', 'Planetary zoom navigation'],
+    icon: CloudUpload,
+    title: 'Continuous Webhook Sync',
+    description: 'Automatically ingest GitHub webhook pushes and compute incremental AST diffs in milliseconds.',
+    category: 'AUTOMATION'
   },
   {
-    icon: RefreshCw,
-    tag: 'AUTOMATED SYNC',
-    title: 'Continuous Intelligence',
-    description: 'Listens to GitHub webhook pushes, detects incremental AST changes, and syncs Neo4j graphs, vector stores, and IDE clients in real-time.',
-    bulletPoints: ['Incremental diff parsing', 'Versioned repository history', 'Low-latency WebSocket sync'],
+    icon: Activity,
+    title: 'Real-time Analytics',
+    description: 'Live Graph-RAG context indexing, 0–100 blast radius scoring, and ambient IDE copilot sync.',
+    category: 'OBSERVABILITY'
   },
 ];
 
 export default function FeaturesSection() {
   return (
-    <section className="py-20 md:py-28 bg-surface/30 border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-24 md:py-32 bg-background border-b border-border relative overflow-hidden">
+      
+      {/* Subtle Background Technical Dot Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.035] pointer-events-none" 
+        style={{ 
+          backgroundImage: `radial-gradient(#000000 1px, transparent 1px)`, 
+          backgroundSize: '24px 24px' 
+        }} 
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
-        {/* Section Header */}
-        <div className="max-w-3xl mb-16 space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-border bg-surface text-[10px] font-mono text-muted">
-            <span>COMPREHENSIVE CAPABILITIES</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
-            Everything your codebase knows.
+        {/* Centered Headline */}
+        <div className="text-center max-w-3xl mx-auto mb-20 space-y-3">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-foreground">
+            Enterprise grade by default.
           </h2>
-          <p className="text-base sm:text-lg text-muted">
-            Six architectural intelligence pillars engineered for modern engineering organizations.
-          </p>
         </div>
 
-        {/* 6 Grid Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {FEATURES.map((feature) => {
+        {/* 3-Column / 2-Row Clean Minimalist Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-16">
+          {ENTERPRISE_FEATURES.map((feature, idx) => {
             const Icon = feature.icon;
-            return (
-              <div 
-                key={feature.title}
-                className="p-6 sm:p-8 rounded-xl border border-border bg-background hover:border-black transition-all flex flex-col justify-between space-y-6 shadow-2xs group"
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="w-10 h-10 rounded-lg bg-surface border border-border flex items-center justify-center text-foreground group-hover:bg-black group-hover:text-white transition-colors">
-                      <Icon className="w-5 h-5" />
-                    </div>
-                    <span className="text-[10px] font-mono text-muted font-bold tracking-wider">{feature.tag}</span>
-                  </div>
 
-                  <h3 className="text-lg font-bold text-foreground tracking-tight">
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                className="flex flex-col items-start space-y-4 group cursor-default"
+              >
+                {/* Rounded Icon Pill */}
+                <div className="w-12 h-12 rounded-2xl border border-border bg-surface flex items-center justify-center text-foreground group-hover:bg-black group-hover:text-white group-hover:border-black transition-all shadow-2xs">
+                  <Icon className="w-5 h-5 transition-transform group-hover:scale-110" />
+                </div>
+
+                {/* Content */}
+                <div className="space-y-1.5">
+                  <h3 className="font-extrabold text-lg text-foreground tracking-tight">
                     {feature.title}
                   </h3>
-
-                  <p className="text-xs text-muted leading-relaxed font-sans">
+                  <p className="text-sm text-muted font-normal leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
-
-                <div className="pt-4 border-t border-border/60 space-y-2">
-                  {feature.bulletPoints.map((bp) => (
-                    <div key={bp} className="flex items-center gap-2 text-[11px] font-mono text-foreground/80">
-                      <span className="w-1 h-1 rounded-full bg-black" />
-                      <span>{bp}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
