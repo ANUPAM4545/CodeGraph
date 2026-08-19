@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { 
   Terminal, 
   Code2, 
@@ -10,141 +11,136 @@ import {
   ActivitySquare, 
   ArrowRight,
   CheckCircle2,
-  Box
+  Box,
+  FileCode
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 export default function IDEShowcase() {
   return (
-    <section id="ide" className="py-20 md:py-28 bg-background border-b border-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="ide" className="py-24 md:py-32 bg-surface/30 border-b border-border relative overflow-hidden">
+      
+      {/* Background Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.035] pointer-events-none" 
+        style={{ 
+          backgroundImage: `radial-gradient(#000000 1px, transparent 1px)`, 
+          backgroundSize: '24px 24px' 
+        }} 
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
         {/* Section Header */}
-        <div className="max-w-3xl mb-12 space-y-4">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border border-border bg-surface text-[10px] font-mono text-muted">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface text-[11px] font-mono text-muted">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
             <span>VS CODE EXTENSION & IDE PROTOCOL</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground">
-            Bring architectural intelligence into your editor.
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-foreground">
+            Intelligence in your editor.
           </h2>
-          <p className="text-base sm:text-lg text-muted">
+          <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed">
             Never context-switch to the browser. CodeGraph delivers ambient architectural CodeLens annotations, blast-radius hovers, and an AI copilot sidebar inside VS Code.
           </p>
         </div>
 
-        {/* VS Code Mockup Window */}
-        <div className="border border-border rounded-xl bg-surface overflow-hidden shadow-2xl font-mono text-xs">
+        {/* macOS Style VS Code Window */}
+        <div className="rounded-3xl border border-border bg-background overflow-hidden shadow-2xl font-mono text-xs max-w-5xl mx-auto">
           
           {/* Editor Header Bar */}
-          <div className="h-10 bg-background border-b border-border px-4 flex items-center justify-between">
+          <div className="h-12 bg-surface border-b border-border px-5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-                <div className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-                <div className="w-2.5 h-2.5 rounded-full bg-neutral-300" />
-              </div>
-              <span className="text-muted ml-2">Visual Studio Code · <span className="text-foreground font-bold">src/services/dispute.ts</span></span>
+              <div className="w-3 h-3 rounded-full bg-neutral-300" />
+              <div className="w-3 h-3 rounded-full bg-neutral-300" />
+              <div className="w-3 h-3 rounded-full bg-neutral-300" />
+              <span className="text-muted ml-3 hidden sm:inline">Visual Studio Code · <span className="text-foreground font-bold">src/services/dispute.ts</span></span>
             </div>
-            <span className="text-[10px] text-muted">CodeGraph VS Code Extension v1.0.0</span>
+            <span className="text-[10px] text-muted font-bold bg-background px-2.5 py-0.5 rounded-full border border-border">
+              CodeGraph VS Code Extension v1.0
+            </span>
           </div>
 
-          {/* Editor Body */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 bg-background min-h-[380px]">
+          {/* Editor Body Split Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[420px]">
             
-            {/* Editor Code Area (8 cols) */}
-            <div className="lg:col-span-8 p-6 space-y-4 border-b lg:border-b-0 lg:border-r border-border font-mono text-xs">
+            {/* Code Editor Column (8 cols) */}
+            <div className="lg:col-span-8 p-6 sm:p-8 space-y-4 border-b lg:border-b-0 lg:border-r border-border bg-background">
               
               {/* CodeLens Annotation 1 */}
-              <div className="flex items-center gap-3 text-[11px] text-muted bg-surface/80 px-2.5 py-1 rounded border border-border/80 w-fit">
-                <span className="font-bold text-foreground flex items-center gap-1">
-                  <ActivitySquare className="w-3 h-3 text-red-500" />
-                  <span>CodeGraph:</span>
+              <div className="flex items-center gap-3 text-[11px] text-muted bg-surface px-3 py-1.5 rounded-xl border border-border w-fit shadow-2xs">
+                <span className="font-bold text-foreground flex items-center gap-1.5">
+                  <ActivitySquare className="w-3.5 h-3.5 text-red-500" />
+                  <span>Blast Radius: 14 Callers</span>
                 </span>
-                <span className="text-foreground font-semibold">14 callers</span>
                 <span>·</span>
-                <span className="text-red-600 font-bold">High Blast Radius (Risk: 84)</span>
+                <span className="text-red-600 font-bold">HIGH RISK</span>
                 <span>·</span>
-                <span className="text-muted hover:text-foreground cursor-pointer underline">Show Impact Graph</span>
+                <span className="text-purple-600 font-bold">Ask AI Copilot ➔</span>
               </div>
 
-              {/* Code Line 1 */}
-              <div className="text-foreground">
-                <span className="text-purple-600 font-bold">export class</span> <span className="text-blue-600 font-bold">DisputeOrchestrator</span> {'{'}
+              {/* Code Block Snippet */}
+              <div className="space-y-1 text-xs text-foreground font-mono leading-relaxed pl-2 border-l-2 border-emerald-500/60">
+                <div><span className="text-purple-600 font-bold">export class</span> <span className="font-black text-foreground">DisputeOrchestrator</span> &#123;</div>
+                <div className="pl-4 text-muted">{'// Manages dispute transitions & double-entry reconciliation'}</div>
+                <div className="pl-4"><span className="text-purple-600 font-bold">public async</span> <span className="font-bold text-blue-600">executeResolution</span>(disputeId: <span className="text-amber-600">string</span>) &#123;</div>
+                <div className="pl-8 text-muted">const ledger = await LedgerClient.reconcile(disputeId);</div>
+                <div className="pl-8 text-muted">return this.dispatchWebhook(disputeId, ledger);</div>
+                <div className="pl-4">&#125;</div>
+                <div>&#125;</div>
               </div>
 
-              {/* Code Line 2 with Hover Popup */}
-              <div className="pl-4 relative">
-                
-                {/* CodeLens Annotation 2 */}
-                <div className="text-[10px] text-muted mb-1 flex items-center gap-2">
-                  <span>8 references</span>
-                  <span>·</span>
-                  <span className="text-purple-600">Explain Architecture</span>
+              {/* Hover Tooltip Box */}
+              <div className="p-4 rounded-2xl border border-border bg-surface space-y-2 shadow-sm">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-foreground flex items-center gap-1.5">
+                    <Box className="w-3.5 h-3.5 text-emerald-500" />
+                    <span>DisputeOrchestrator · Node Telemetry</span>
+                  </span>
+                  <span className="text-[10px] text-muted">Subsystem: Engine Core</span>
                 </div>
-
-                <div className="text-foreground">
-                  <span className="text-purple-600 font-bold">async</span> <span className="text-blue-600 font-bold">executeResolution</span>(disputeId: <span className="text-emerald-600">string</span>) {'{'}
-                </div>
-
-                {/* Ambient Hover Tooltip */}
-                <div className="my-2 p-3.5 rounded-lg border-2 border-black bg-surface shadow-xl max-w-md space-y-2 text-[11px] font-mono">
-                  <div className="flex items-center justify-between border-b border-border pb-1.5">
-                    <span className="font-bold text-foreground">DisputeOrchestrator.executeResolution()</span>
-                    <span className="text-red-600 font-bold text-[10px] bg-red-500/10 px-1.5 py-0.5 rounded">HIGH RISK</span>
-                  </div>
-                  <div className="text-muted text-[10px] font-sans">
-                    Modifying this method affects <strong className="text-foreground">PaymentRouter</strong>, <strong className="text-foreground">LedgerSyncWorker</strong>, and triggers 3 external webhooks.
-                  </div>
-                  <div className="flex items-center gap-2 pt-1 text-[10px] text-muted">
-                    <span>Subsystem: <strong className="text-foreground">Engine</strong></span>
-                    <span>·</span>
-                    <span>Fan-in: <strong className="text-foreground">14</strong></span>
-                  </div>
-                </div>
-
-                <div className="text-foreground pl-4">
-                  <span className="text-purple-600">const</span> record = <span className="text-purple-600">await this</span>.db.fetch(disputeId);
-                </div>
-                <div className="text-foreground">
-                  {'}'}
-                </div>
-              </div>
-
-              <div className="text-foreground">
-                {'}'}
-              </div>
-
-            </div>
-
-            {/* Editor Sidebar: CodeGraph Copilot (4 cols) */}
-            <div className="lg:col-span-4 p-5 bg-surface/50 space-y-4 font-mono text-xs">
-              
-              <div className="flex items-center gap-2 pb-2 border-b border-border text-foreground font-bold text-[11px]">
-                <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-                <span>CodeGraph Architectural Sidebar</span>
-              </div>
-
-              <div className="space-y-2 text-[11px]">
-                <div className="text-muted font-bold text-[10px] uppercase">Symbol Dependencies</div>
-                <div className="p-2 rounded bg-background border border-border space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-foreground font-bold">LedgerClient</span>
-                    <span className="text-muted text-[10px]">src/db/ledger.ts</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-foreground font-bold">AuditLogger</span>
-                    <span className="text-muted text-[10px]">src/audit/log.ts</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="p-3 rounded-lg border border-border bg-background space-y-2">
-                <div className="text-[10px] font-bold text-foreground uppercase">AI Architectural Summary</div>
                 <p className="text-[11px] text-muted font-sans leading-snug">
-                  This class manages state transitions for buyer/seller disputes, verifying proof signatures before posting double-entry ledger adjustments.
+                  Incoming fan-in calls from <strong className="text-foreground">37 REST endpoints</strong>. Direct dependency on <strong className="text-foreground">LedgerClient</strong>.
                 </p>
               </div>
 
+            </div>
+
+            {/* Sidebar Copilot Column (4 cols) */}
+            <div className="lg:col-span-4 p-6 bg-surface/40 flex flex-col justify-between space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-border">
+                  <span className="font-bold text-foreground text-xs flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-600" />
+                    <span>CodeGraph Copilot</span>
+                  </span>
+                  <span className="text-[10px] text-emerald-600 font-bold">CONNECTED</span>
+                </div>
+
+                <div className="p-3.5 rounded-2xl border border-border bg-background space-y-2 shadow-2xs">
+                  <div className="text-[10px] text-muted uppercase font-bold">Active File Context</div>
+                  <div className="font-bold text-foreground text-xs">src/services/dispute.ts</div>
+                  <div className="text-[10px] text-muted">Cypher Node ID: #8492</div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl border border-border bg-background space-y-2 shadow-2xs">
+                  <div className="text-[10px] text-purple-600 uppercase font-bold">Suggested Refactor</div>
+                  <p className="text-[11px] text-muted font-sans leading-snug">
+                    Extract <code className="text-foreground font-bold">LedgerClient.reconcile()</code> into an asynchronous task queue to isolate transaction locks.
+                  </p>
+                </div>
+              </div>
+
+              <a 
+                href="https://marketplace.visualstudio.com" 
+                target="_blank" 
+                rel="noreferrer"
+                className="w-full block"
+              >
+                <Button size="sm" className="w-full text-xs font-bold rounded-full h-10 bg-black text-white hover:bg-neutral-800 shadow-xs">
+                  <span>Install VS Code Extension</span>
+                </Button>
+              </a>
             </div>
 
           </div>
