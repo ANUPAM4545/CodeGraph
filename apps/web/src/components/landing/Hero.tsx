@@ -6,269 +6,336 @@ import { motion } from 'framer-motion';
 import { 
   ArrowRight, 
   Github, 
-  Terminal, 
   Sparkles, 
   Network, 
-  CheckCircle2, 
+  Layers, 
+  ShieldAlert, 
+  BrainCircuit, 
+  Cuboid, 
+  Terminal,
+  Search,
+  Code2,
+  FileCode,
   Box,
-  Copy,
-  Check
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 
-const WORDS_TO_TYPE = [
-  'Understand Codebases.',
-  'Map Architecture.',
-  'Simulate Blast Radius.',
-  'Ground AI Answers.',
-  'Analyze Dependencies.',
+const CAPABILITIES = [
+  { name: 'Knowledge Graph', icon: Network },
+  { name: 'AI Assistant', icon: BrainCircuit },
+  { name: 'Impact Analysis', icon: ShieldAlert },
+  { name: 'Repository Intelligence', icon: Layers },
+  { name: '3D Codebase', icon: Cuboid },
+  { name: 'IDE Integration', icon: Terminal },
 ];
 
-const TERMINAL_LOGS = [
-  { text: '$ codegraph ingest repo:MarketPlace-Dispute-Engine', delay: 0.2, type: 'cmd' },
-  { text: '✔ Tree-sitter AST syntax parsed · 14 files, 48 symbols', delay: 0.8, type: 'success' },
-  { text: '✔ Neo4j Knowledge Graph connected (CALLS, IMPORTS, INHERITS)', delay: 1.4, type: 'success' },
-  { text: '✔ Qdrant vector chunks embedded with Graph-RAG context', delay: 2.0, type: 'success' },
-  { text: '✔ Blast radius indexed · 7 subsystems discovered · Risk Score: 84', delay: 2.6, type: 'info' },
-  { text: '⚡ Living architectural intelligence layer ready.', delay: 3.2, type: 'ready' },
+const PREVIEW_NODES = [
+  { id: '1', name: 'DisputeService', type: 'CLASS', file: 'src/services/dispute.ts', callers: 14, risk: 'HIGH', x: '45%', y: '45%' },
+  { id: '2', name: 'calculateRiskScore()', type: 'FUNCTION', file: 'src/rules/risk.ts', callers: 12, risk: 'MEDIUM', x: '18%', y: '22%' },
+  { id: '3', name: 'LedgerClient', type: 'CLASS', file: 'src/db/ledger.ts', callers: 8, risk: 'LOW', x: '72%', y: '25%' },
+  { id: '4', name: 'dispute_router.py', type: 'FILE', file: 'src/api/routes.py', callers: 5, risk: 'LOW', x: '45%', y: '78%' },
 ];
 
 export default function Hero() {
-  const [currentWordIdx, setCurrentWordIdx] = useState(0);
-  const [currentText, setCurrentText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeNodeIdx, setActiveNodeIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  // Typewriter effect loop
+  // Automatic subtle node cycling (pauses when user hovers)
   useEffect(() => {
-    const targetWord = WORDS_TO_TYPE[currentWordIdx];
-    const typingSpeed = isDeleting ? 45 : 90;
-
-    const timer = setTimeout(() => {
-      if (!isDeleting) {
-        if (currentText.length < targetWord.length) {
-          setCurrentText(targetWord.slice(0, currentText.length + 1));
-        } else {
-          // Pause at full word before deleting
-          setTimeout(() => setIsDeleting(true), 2000);
-        }
-      } else {
-        if (currentText.length > 0) {
-          setCurrentText(targetWord.slice(0, currentText.length - 1));
-        } else {
-          setIsDeleting(false);
-          setCurrentWordIdx((prev) => (prev + 1) % WORDS_TO_TYPE.length);
-        }
-      }
-    }, typingSpeed);
-
-    return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentWordIdx]);
-
-  useEffect(() => {
+    if (isPaused) return;
     const timer = setInterval(() => {
-      setActiveStep((prev) => (prev < TERMINAL_LOGS.length ? prev + 1 : prev));
-    }, 550);
+      setActiveNodeIdx((prev) => (prev + 1) % PREVIEW_NODES.length);
+    }, 3200);
     return () => clearInterval(timer);
-  }, []);
+  }, [isPaused]);
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText('npm install -g @codegraph/cli && codegraph login');
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const activeNode = PREVIEW_NODES[activeNodeIdx];
 
   return (
-    <section className="relative pt-36 pb-16 md:pt-44 md:pb-24 overflow-hidden border-b border-border bg-background">
+    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-background">
       
-      {/* Background Architectural Grid */}
+      {/* Fine Dotted Grid Background */}
       <div 
-        className="absolute inset-0 opacity-[0.035] pointer-events-none" 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none" 
         style={{ 
-          backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`, 
-          backgroundSize: '32px 32px' 
+          backgroundImage: `radial-gradient(#000000 1px, transparent 1px)`, 
+          backgroundSize: '24px 24px' 
         }} 
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Floating Ambient AST Pill 1 (Left - Desktop Only) */}
-        <motion.div 
-          initial={{ opacity: 0, x: -30, y: 10 }}
-          animate={{ opacity: 1, x: 0, y: [0, -6, 0] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="hidden xl:flex absolute left-4 top-24 z-10 flex-col gap-1 p-3 rounded-xl border border-border bg-surface/90 backdrop-blur-sm shadow-md font-mono text-[11px] max-w-[210px]"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-muted text-[10px] font-bold">AST NODE</span>
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-          </div>
-          <div className="font-bold text-foreground flex items-center gap-1.5 truncate">
-            <Box className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="truncate">DisputeOrchestrator</span>
-          </div>
-          <div className="flex items-center justify-between text-[10px] text-muted pt-1 border-t border-border/60">
-            <span>Fan-in: 14 callers</span>
-            <span className="text-red-600 font-bold">HIGH RISK</span>
-          </div>
-        </motion.div>
-
-        {/* Floating Ambient AST Pill 2 (Right - Desktop Only) */}
-        <motion.div 
-          initial={{ opacity: 0, x: 30, y: -10 }}
-          animate={{ opacity: 1, x: 0, y: [0, 6, 0] }}
-          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-          className="hidden xl:flex absolute right-4 top-28 z-10 flex-col gap-1 p-3 rounded-xl border border-border bg-surface/90 backdrop-blur-sm shadow-md font-mono text-[11px] max-w-[220px]"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-muted text-[10px] font-bold">HYBRID GRAPH-RAG</span>
-            <span className="text-purple-600 font-bold text-[9px] bg-purple-500/10 px-1 rounded">QDRANT</span>
-          </div>
-          <div className="font-bold text-foreground flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-            <span>Cypher Topological Search</span>
-          </div>
-          <div className="flex items-center justify-between text-[10px] text-muted pt-1 border-t border-border/60">
-            <span>Confidence: 98%</span>
-            <span className="text-emerald-600 font-bold">GROUNDED</span>
-          </div>
-        </motion.div>
-
-        {/* Main Central Content Area */}
-        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-6">
+        {/* Top Hero Text Section */}
+        <div className="max-w-4xl mx-auto text-center space-y-6">
           
-          {/* Eyebrow Pill */}
-          <motion.div 
-            initial={{ opacity: 0, y: -12 }}
+          {/* Eyebrow Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-border bg-surface text-[11px] font-mono font-medium tracking-wide text-foreground shadow-2xs hover:border-black transition-colors"
+            transition={{ duration: 0.4 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full border border-border bg-surface text-xs font-mono font-bold text-neutral-800 shadow-2xs"
           >
-            <span className="w-2 h-2 rounded-full bg-black" />
-            <span>Introducing CodeGraph Enterprise 2.0</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>AI-POWERED CODE INTELLIGENCE</span>
           </motion.div>
 
-          {/* 3-Line Large Headline with Typewriter Cursor */}
-          <motion.div 
+          {/* Main Headline */}
+          <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="space-y-1 sm:space-y-2"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-foreground leading-[1.08]"
           >
-            {/* Line 1: Typewriter Text with blinking bar */}
-            <div className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-black tracking-tight text-foreground leading-[1.08] flex items-center justify-center min-h-[1.15em]">
-              <span>{currentText}</span>
-              <span className="inline-block w-[3px] sm:w-[5px] h-[0.9em] bg-neutral-400 ml-1 sm:ml-2 animate-pulse align-baseline" />
-            </div>
+            Understand Your Codebase. <br />
+            <span className="text-neutral-500 font-extrabold">Before You Change It.</span>
+          </motion.h1>
 
-            {/* Line 2 */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-black tracking-tight text-foreground leading-[1.08]">
-              Track Every Dependency.
-            </h1>
-
-            {/* Line 3 */}
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-black tracking-tight text-foreground leading-[1.08]">
-              All From One Platform.
-            </h2>
-          </motion.div>
-
-          {/* Subheading */}
-          <motion.p 
+          {/* Supporting Description */}
+          <motion.p
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-muted max-w-2xl font-normal leading-relaxed pt-2"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-base sm:text-lg md:text-xl text-muted max-w-2xl mx-auto leading-relaxed font-normal"
           >
-            The premium enterprise platform for codebase intelligence, living architectural knowledge graphs, blast-radius simulation, and real-time developer sync.
+            CodeGraph turns complex repositories into living architectural knowledge graphs, giving developers and engineering teams a complete view of their code, dependencies, architecture, and impact.
           </motion.p>
 
           {/* CTA Buttons */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center gap-3 pt-2 w-full sm:w-auto"
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 font-mono"
           >
             <Link href="/login" className="w-full sm:w-auto">
-              <Button size="lg" className="w-full sm:w-auto text-xs font-bold gap-2 px-8 h-12 rounded-full bg-black text-white hover:bg-neutral-800 shadow-md hover:shadow-lg transition-all group">
+              <Button
+                size="lg"
+                className="w-full sm:w-auto h-12 px-7 rounded-full bg-black text-white text-xs font-bold hover:bg-neutral-800 transition-all shadow-md hover:shadow-xl gap-2 group"
+              >
                 <Github className="w-4 h-4 transition-transform group-hover:scale-110" />
                 <span>Connect GitHub</span>
-                <ArrowRight className="w-3.5 h-3.5 ml-0.5 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
-            <a href="#product" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-xs font-semibold px-7 h-12 rounded-full border-border hover:border-black hover:bg-surface text-foreground transition-all">
+
+            <a href="#preview" className="w-full sm:w-auto">
+              <Button
+                variant="outline"
+                size="lg"
+                className="w-full sm:w-auto h-12 px-6 rounded-full border-border hover:border-black hover:bg-surface text-xs font-semibold text-foreground transition-all"
+              >
                 <span>Explore the Platform</span>
               </Button>
             </a>
           </motion.div>
 
-          {/* Supporting Microcopy */}
-          <motion.p 
+          {/* Compact Capability Strip */}
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="text-[11px] font-mono text-muted/80 tracking-tight"
+            className="pt-6 flex items-center justify-center flex-wrap gap-2 sm:gap-3"
           >
-            Built for developers, architects, and engineering teams.
-          </motion.p>
-
-          {/* Animated Industrial Pipeline Terminal Stream */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.45 }}
-            className="w-full max-w-2xl mt-6 rounded-xl border border-border bg-black text-white shadow-2xl overflow-hidden text-left font-mono text-xs"
-          >
-            {/* Terminal Window Bar */}
-            <div className="h-9 bg-neutral-900 border-b border-neutral-800 px-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-                  <div className="w-2.5 h-2.5 rounded-full bg-neutral-700" />
-                </div>
-                <span className="text-[11px] text-neutral-400 ml-2">codegraph-engine-daemon · live stream</span>
-              </div>
-              <button 
-                onClick={handleCopy}
-                className="flex items-center gap-1 text-[10px] text-neutral-400 hover:text-white transition-colors"
-                title="Copy install command"
-              >
-                {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
-                <span>{copied ? 'Copied' : 'Copy CLI'}</span>
-              </button>
-            </div>
-
-            {/* Terminal Stream Body */}
-            <div className="p-4 space-y-2 text-[11px] bg-black/95 min-h-[145px]">
-              {TERMINAL_LOGS.slice(0, activeStep).map((log, idx) => (
-                <motion.div 
-                  key={log.text}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  className={`flex items-start gap-2 ${
-                    log.type === 'cmd' ? 'text-neutral-300 font-bold' :
-                    log.type === 'success' ? 'text-emerald-400' :
-                    log.type === 'info' ? 'text-amber-400' :
-                    'text-purple-400 font-bold'
-                  }`}
+            {CAPABILITIES.map((cap) => {
+              const Icon = cap.icon;
+              return (
+                <div
+                  key={cap.name}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-white text-[11px] font-mono font-medium text-neutral-700 shadow-2xs"
                 >
-                  <span className="text-neutral-600 select-none">&gt;</span>
-                  <span>{log.text}</span>
-                </motion.div>
-              ))}
-              {activeStep < TERMINAL_LOGS.length && (
-                <div className="flex items-center gap-2 text-neutral-500 animate-pulse">
-                  <span className="text-neutral-700">&gt;</span>
-                  <span className="inline-block w-2 h-3.5 bg-neutral-400 align-middle" />
+                  <Icon className="w-3.5 h-3.5 text-neutral-500" />
+                  <span>{cap.name}</span>
                 </div>
-              )}
-            </div>
+              );
+            })}
           </motion.div>
 
         </div>
+
+        {/* Realistic CodeGraph Hero Product Preview */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.45 }}
+          className="mt-14 max-w-5xl mx-auto"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="rounded-3xl border border-border bg-white shadow-2xl overflow-hidden font-mono text-xs">
+            
+            {/* macOS Browser Header */}
+            <div className="h-11 bg-neutral-50 border-b border-border px-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-neutral-300" />
+                <div className="w-3 h-3 rounded-full bg-neutral-300" />
+                <div className="w-3 h-3 rounded-full bg-neutral-300" />
+              </div>
+
+              {/* URL Pill */}
+              <div className="px-4 py-0.5 rounded-full bg-white border border-border text-[11px] text-muted flex items-center gap-1.5 shadow-2xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                <span>codegraph.dev/app/marketplace-engine</span>
+              </div>
+
+              <div className="text-[11px] text-muted">
+                <span>AST v1.4.2 · Live</span>
+              </div>
+            </div>
+
+            {/* Product Body Viewport */}
+            <div className="grid grid-cols-1 md:grid-cols-12 min-h-[380px] bg-white">
+              
+              {/* Left Sub-Sidebar (3 cols) */}
+              <div className="hidden md:block md:col-span-3 border-r border-border p-4 bg-neutral-50/50 space-y-3">
+                <div className="text-[10px] text-muted uppercase font-bold tracking-wider">
+                  Repository Explorer
+                </div>
+
+                <div className="space-y-1 text-[11px]">
+                  <div className="flex items-center gap-1.5 text-foreground font-bold p-1 rounded hover:bg-neutral-100 cursor-pointer">
+                    <FileCode className="w-3.5 h-3.5 text-blue-500" />
+                    <span>src/services/</span>
+                  </div>
+                  <div className="pl-4 space-y-1 text-muted">
+                    <div className={`p-1 rounded cursor-pointer transition-colors ${activeNode.id === '1' ? 'bg-neutral-200 text-foreground font-bold' : 'hover:bg-neutral-100'}`} onClick={() => setActiveNodeIdx(0)}>
+                      dispute.ts
+                    </div>
+                    <div className={`p-1 rounded cursor-pointer transition-colors ${activeNode.id === '2' ? 'bg-neutral-200 text-foreground font-bold' : 'hover:bg-neutral-100'}`} onClick={() => setActiveNodeIdx(1)}>
+                      risk.ts
+                    </div>
+                    <div className={`p-1 rounded cursor-pointer transition-colors ${activeNode.id === '3' ? 'bg-neutral-200 text-foreground font-bold' : 'hover:bg-neutral-100'}`} onClick={() => setActiveNodeIdx(2)}>
+                      ledger.ts
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-3 border-t border-border space-y-1 text-[10px] text-muted">
+                  <div>AST Nodes: <strong className="text-foreground">1,452</strong></div>
+                  <div>Edges: <strong className="text-foreground">3,890</strong></div>
+                  <div>Health Score: <strong className="text-emerald-600">96/100</strong></div>
+                </div>
+              </div>
+
+              {/* Center Graph Canvas (6 cols) */}
+              <div className="md:col-span-6 relative h-[380px] bg-dot-pattern flex items-center justify-center p-4 overflow-hidden border-b md:border-b-0 md:border-r border-border select-none">
+                
+                {/* SVG Connecting Relationship Edges */}
+                <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                  <line x1="50%" y1="50%" x2="25%" y2="25%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                  <line x1="50%" y1="50%" x2="75%" y2="25%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                  <line x1="50%" y1="50%" x2="50%" y2="80%" stroke="#E5E5E5" strokeWidth="2" strokeDasharray="3 3" />
+                </svg>
+
+                {/* Node 2: Risk Function */}
+                <div 
+                  onClick={() => setActiveNodeIdx(1)}
+                  className={`absolute left-[12%] top-[15%] cursor-pointer p-2.5 rounded-xl border transition-all ${
+                    activeNode.id === '2' 
+                      ? 'border-purple-500 bg-purple-50 shadow-md scale-105' 
+                      : 'border-border bg-white hover:border-neutral-400'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-bold text-[11px] text-foreground">
+                    <Code2 className="w-3 h-3 text-purple-600" />
+                    <span>calculateRiskScore()</span>
+                  </div>
+                  <div className="text-[9px] text-muted">Rules Engine</div>
+                </div>
+
+                {/* Node 3: Ledger Client */}
+                <div 
+                  onClick={() => setActiveNodeIdx(2)}
+                  className={`absolute right-[12%] top-[18%] cursor-pointer p-2.5 rounded-xl border transition-all ${
+                    activeNode.id === '3' 
+                      ? 'border-emerald-500 bg-emerald-50 shadow-md scale-105' 
+                      : 'border-border bg-white hover:border-neutral-400'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-bold text-[11px] text-foreground">
+                    <Box className="w-3 h-3 text-emerald-600" />
+                    <span>LedgerClient</span>
+                  </div>
+                  <div className="text-[9px] text-muted">Database ORM</div>
+                </div>
+
+                {/* Node 1: Central DisputeService Class */}
+                <div 
+                  onClick={() => setActiveNodeIdx(0)}
+                  className={`cursor-pointer p-3.5 rounded-2xl border-2 transition-all shadow-lg ${
+                    activeNode.id === '1' 
+                      ? 'border-black bg-white ring-4 ring-black/5 scale-110' 
+                      : 'border-neutral-300 bg-white hover:border-black'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 font-bold text-xs text-foreground">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>DisputeService</span>
+                  </div>
+                  <div className="text-[10px] text-muted mt-0.5">Class · Engine Subsystem</div>
+                  <div className="mt-1.5 pt-1.5 border-t border-border flex items-center justify-between text-[9px] text-muted gap-2">
+                    <span>Callers: 14</span>
+                    <span className="text-red-600 font-bold">HIGH RISK</span>
+                  </div>
+                </div>
+
+                {/* Node 4: FastAPI Router */}
+                <div 
+                  onClick={() => setActiveNodeIdx(3)}
+                  className={`absolute bottom-[10%] cursor-pointer p-2.5 rounded-xl border transition-all ${
+                    activeNode.id === '4' 
+                      ? 'border-blue-500 bg-blue-50 shadow-md scale-105' 
+                      : 'border-border bg-white hover:border-neutral-400'
+                  }`}
+                >
+                  <div className="flex items-center gap-1.5 font-bold text-[11px] text-foreground">
+                    <FileCode className="w-3 h-3 text-blue-600" />
+                    <span>dispute_router.py</span>
+                  </div>
+                  <div className="text-[9px] text-muted">FastAPI Route</div>
+                </div>
+
+              </div>
+
+              {/* Right Details Panel (3 cols) */}
+              <div className="md:col-span-3 p-4 bg-neutral-50/30 flex flex-col justify-between space-y-3">
+                <div className="space-y-3">
+                  <div className="text-[10px] text-muted uppercase font-bold tracking-wider">
+                    Node Telemetry
+                  </div>
+
+                  <div className="p-3 rounded-2xl border border-border bg-white shadow-2xs space-y-2">
+                    <div className="font-extrabold text-foreground text-xs">{activeNode.name}</div>
+                    <div className="text-[10px] text-muted">{activeNode.file}</div>
+                    <div className="pt-2 border-t border-border flex items-center justify-between text-[10px]">
+                      <span className="text-muted">Fan-in Callers:</span>
+                      <strong className="text-foreground">{activeNode.callers}</strong>
+                    </div>
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-muted">Impact Score:</span>
+                      <span className={`font-bold px-1.5 py-0.5 rounded text-[9px] ${
+                        activeNode.risk === 'HIGH' ? 'bg-red-50 text-red-600 border border-red-200' : 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                      }`}>
+                        {activeNode.risk}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="text-[10px] text-muted leading-tight font-sans">
+                    Auto-synchronized with Neo4j AST property graph in real-time.
+                  </div>
+                </div>
+
+                <div className="text-[10px] text-neutral-400 font-mono">
+                  Press any node to inspect
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </motion.div>
+
       </div>
     </section>
   );

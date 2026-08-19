@@ -1,160 +1,187 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FolderGit2, 
-  Sliders, 
+  Binary, 
   Network, 
   Layers, 
-  ShieldCheck, 
-  BarChart3, 
-  Check,
+  BrainCircuit, 
+  ShieldAlert, 
   CheckCircle2,
-  TrendingUp,
-  Activity,
-  Zap,
-  ArrowRight
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 
-interface Step {
+interface WorkflowStep {
   id: string;
-  number: string;
+  stepNum: string;
   name: string;
   icon: React.ElementType;
+  title: string;
+  desc: string;
+  technical: string;
   metric: string;
-  subtext: string;
-  badge: string;
-  bars: number[];
 }
 
-const STEPS: Step[] = [
+const WORKFLOW_STEPS: WorkflowStep[] = [
   {
     id: 'connect',
-    number: '01',
-    name: 'Connect Repo',
+    stepNum: '01',
+    name: 'Connect Repository',
     icon: FolderGit2,
-    metric: '14 Repositories Synced',
-    subtext: '+3 repositories onboarded today',
-    badge: 'OAUTH LIVE',
-    bars: [35, 50, 45, 60, 55, 75, 90]
+    title: 'OAuth & Webhook Authorization',
+    desc: 'Authorize public or private GitHub repositories with cryptographic PKCE verification.',
+    technical: 'SHA-256 HMAC webhook secret verified upon payload delivery.',
+    metric: 'Instant Webhook Handshake'
   },
   {
-    id: 'parse',
-    number: '02',
-    name: 'Parse AST',
-    icon: Sliders,
-    metric: '48 Lossless AST Trees',
-    subtext: 'Python & TypeScript grammars verified',
-    badge: 'TREE-SITTER',
-    bars: [40, 60, 50, 70, 65, 80, 95]
+    id: 'analyze',
+    stepNum: '02',
+    name: 'Analyze Code',
+    icon: Binary,
+    title: 'Lossless Concrete AST Extraction',
+    desc: 'Tree-sitter parsers process Python & TypeScript AST grammars to isolate definitions, calls, and imports.',
+    technical: 'Extracts classes, methods, parameters, and return types with exact line offsets.',
+    metric: '< 1.4s per 10k lines'
   },
   {
     id: 'graph',
-    number: '03',
-    name: 'Build Graph',
+    stepNum: '03',
+    name: 'Build Knowledge Graph',
     icon: Network,
-    metric: '1,452 Topological Edges',
-    subtext: 'CALLS, IMPORTS, INHERITS indexed',
-    badge: 'NEO4J ACID',
-    bars: [30, 45, 65, 55, 75, 85, 100]
+    title: 'Neo4j Property Graph Insertion',
+    desc: 'Load canonical syntax nodes and typed relationships into Neo4j with ACID transactional guarantees.',
+    technical: 'Indexed on (name, repo_id, version_id) for sub-millisecond Cypher graph traversals.',
+    metric: '3,890 Topological Edges'
   },
   {
-    id: 'vectors',
-    number: '04',
-    name: 'Index Vectors',
+    id: 'architecture',
+    stepNum: '04',
+    name: 'Understand Architecture',
     icon: Layers,
-    metric: '0.98 Cosine Accuracy',
-    subtext: 'Graph-RAG dense payloads generated',
-    badge: 'QDRANT HNSW',
-    bars: [50, 65, 60, 80, 70, 90, 98]
+    title: 'Subsystem Boundary Auto-Clustering',
+    desc: 'Algorithms detect module boundaries, cyclic loops, and architectural hotspots automatically.',
+    technical: 'Computes instability indices and fan-in coupling across all project subsystems.',
+    metric: '0 Circular Loops Detected'
+  },
+  {
+    id: 'ask',
+    stepNum: '05',
+    name: 'Ask AI',
+    icon: BrainCircuit,
+    title: 'Graph-RAG Source-Grounded Reasoning',
+    desc: 'Hybrid retrieval combines multi-hop graph context with Qdrant semantic vector chunks.',
+    technical: 'Prompts inject verified AST subgraphs to prevent AI hallucinations.',
+    metric: '100% Verified Citations'
   },
   {
     id: 'impact',
-    number: '05',
-    name: 'Simulate Impact',
-    icon: ShieldCheck,
-    metric: '0 Circular Loops',
-    subtext: 'DAG verified across 4 subsystems',
-    badge: 'RISK SCORE: 84',
-    bars: [25, 40, 55, 50, 70, 80, 92]
+    stepNum: '06',
+    name: 'Analyze Impact',
+    icon: ShieldAlert,
+    title: 'Topological Blast Radius Simulation',
+    desc: 'Trace multi-depth upstream callers and downstream dependencies before touching a line of code.',
+    technical: 'Computes deterministic 0–100 regression risk scores for PR validation.',
+    metric: 'Multi-Depth Traversal'
   },
   {
-    id: 'analytics',
-    number: '06',
-    name: 'Track Analytics',
-    icon: BarChart3,
-    metric: '1,452 AST Nodes',
-    subtext: '+12% from last commit',
-    badge: 'LIVE DASHBOARD',
-    bars: [30, 55, 40, 70, 50, 80, 95]
+    id: 'ship',
+    stepNum: '07',
+    name: 'Ship Changes Safely',
+    icon: CheckCircle2,
+    title: 'Ambient IDE Sync & Continuous Deploy',
+    desc: 'Push updates straight into VS Code annotations and sync graphs automatically on every git commit.',
+    technical: 'Real-time WebSocket protocol pushes diff telemetry to developer editors.',
+    metric: 'Zero Stale Documentation'
   },
 ];
 
 export default function DeveloperWorkflow() {
-  const [activeStepId, setActiveStepId] = useState('analytics');
-  const currentStep = STEPS.find((s) => s.id === activeStepId) || STEPS[5];
+  const [activeStepIdx, setActiveStepIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  // Auto-advance through workflow steps (pauses on user interaction)
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(() => {
+      setActiveStepIdx((prev) => (prev + 1) % WORKFLOW_STEPS.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [isPaused]);
+
+  const activeStep = WORKFLOW_STEPS[activeStepIdx];
 
   return (
-    <section className="py-24 md:py-32 bg-background border-b border-border relative overflow-hidden">
+    <section id="workflow" className="py-24 md:py-32 bg-background border-b border-border relative overflow-hidden">
       
-      {/* Background Architectural Grid */}
+      {/* Background Architectural Dot Grid */}
       <div 
-        className="absolute inset-0 opacity-[0.035] pointer-events-none" 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none" 
         style={{ 
-          backgroundImage: `linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)`, 
-          backgroundSize: '32px 32px' 
+          backgroundImage: `radial-gradient(#000000 1px, transparent 1px)`, 
+          backgroundSize: '24px 24px' 
         }} 
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-surface text-[11px] font-mono font-bold text-neutral-800 shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span>DEVELOPER WORKFLOW</span>
+          </div>
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-foreground">
-            A flawless workflow.
+            From Repository to Understanding.
           </h2>
-          <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed">
-            CodeGraph maps precisely to how elite engineering teams operate, fully automating architectural understanding so you can focus on building.
+          <p className="text-base sm:text-lg text-muted max-w-2xl mx-auto leading-relaxed font-normal">
+            A seamless automated pipeline that continuously synchronizes architecture from your first commit to production.
           </p>
         </div>
 
-        {/* 6-Step Horizontal Interconnected Linear Stepper */}
-        <div className="relative mb-16 overflow-x-auto pb-6 pt-2 scrollbar-none">
-          
-          {/* Horizontal Connecting Center Line */}
-          <div className="hidden lg:block absolute top-[36px] left-[8%] right-[8%] h-[2px] bg-black/80 z-0" />
+        {/* 7-Step Horizontal Stepper Bar */}
+        <div 
+          className="relative mb-12 overflow-x-auto pb-4 pt-2 scrollbar-none"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Continuous Horizontal Line */}
+          <div className="hidden xl:block absolute top-[36px] left-[6%] right-[6%] h-[2px] bg-neutral-200 z-0" />
 
-          <div className="flex items-center justify-between min-w-[760px] max-w-5xl mx-auto relative z-10 px-4">
-            {STEPS.map((step) => {
+          <div className="flex items-center justify-between min-w-[860px] max-w-6xl mx-auto relative z-10 px-4">
+            {WORKFLOW_STEPS.map((step, idx) => {
               const Icon = step.icon;
-              const isActive = activeStepId === step.id;
+              const isActive = activeStepIdx === idx;
 
               return (
                 <div 
                   key={step.id}
-                  onClick={() => setActiveStepId(step.id)}
-                  className="flex flex-col items-center text-center cursor-pointer group space-y-3"
+                  onClick={() => setActiveStepIdx(idx)}
+                  className="flex flex-col items-center text-center cursor-pointer group space-y-2.5"
                 >
                   {/* Step Card Box */}
-                  <div className={`relative w-16 h-16 sm:w-18 sm:h-18 rounded-2xl border-2 flex items-center justify-center transition-all duration-200 bg-background ${
+                  <div className={`relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 bg-white ${
                     isActive 
-                      ? 'border-black bg-surface shadow-lg scale-110' 
-                      : 'border-black/80 hover:border-black hover:scale-105'
+                      ? 'border-black bg-white shadow-xl scale-110 ring-4 ring-black/5' 
+                      : 'border-neutral-200 hover:border-black hover:scale-105'
                   }`}>
-                    {/* Top Right Checkmark Badge */}
-                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-black text-white flex items-center justify-center text-[10px] font-bold shadow-xs">
-                      <Check className="w-3 h-3 stroke-[3]" />
+                    {/* Top Right Step Number Badge */}
+                    <div className={`absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shadow-xs ${
+                      isActive ? 'bg-black text-white' : 'bg-neutral-100 text-neutral-600 border border-neutral-200'
+                    }`}>
+                      {step.stepNum}
                     </div>
 
-                    <Icon className={`w-7 h-7 transition-colors ${
-                      isActive ? 'text-black' : 'text-neutral-800 group-hover:text-black'
+                    <Icon className={`w-6 h-6 transition-colors ${
+                      isActive ? 'text-black' : 'text-neutral-500 group-hover:text-black'
                     }`} />
                   </div>
 
                   {/* Step Label */}
-                  <span className={`font-mono text-xs sm:text-sm font-extrabold transition-colors ${
-                    isActive ? 'text-foreground font-black' : 'text-muted group-hover:text-foreground'
+                  <span className={`font-mono text-xs transition-colors whitespace-nowrap ${
+                    isActive ? 'text-foreground font-black' : 'text-muted group-hover:text-foreground font-medium'
                   }`}>
                     {step.name}
                   </span>
@@ -164,46 +191,44 @@ export default function DeveloperWorkflow() {
           </div>
         </div>
 
-        {/* Large Lower Container with Dynamic Live Metric Dashboard */}
-        <div className="rounded-3xl border border-border bg-surface/40 p-6 sm:p-12 shadow-sm max-w-4xl mx-auto">
-          
-          <div className="rounded-2xl border border-border bg-background p-6 sm:p-8 max-w-lg mx-auto shadow-md space-y-6">
+        {/* Dynamic Technical Details Inspector Card */}
+        <div 
+          className="rounded-3xl border border-border bg-surface/50 p-6 sm:p-10 shadow-sm max-w-4xl mx-auto font-mono text-xs"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          <div className="rounded-2xl border border-border bg-white p-6 sm:p-8 shadow-md space-y-6">
             
-            {/* Metric Top Bar */}
-            <div className="flex items-start justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-border">
               <div>
-                <div className="text-2xl sm:text-3xl font-black text-foreground font-mono tracking-tight">
-                  {currentStep.metric}
-                </div>
-                <div className="text-xs text-muted font-mono mt-1">
-                  {currentStep.subtext}
-                </div>
+                <span className="text-[10px] text-muted uppercase font-bold">Step {activeStep.stepNum} in Pipeline</span>
+                <h3 className="text-xl sm:text-2xl font-black text-foreground tracking-tight mt-0.5">
+                  {activeStep.title}
+                </h3>
               </div>
 
-              {/* Status Pill */}
-              <div className="px-3 py-1 rounded-full bg-black text-white text-[10px] font-mono font-bold flex items-center gap-1.5 shadow-xs">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>{currentStep.badge}</span>
-              </div>
+              <span className="text-emerald-700 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-full font-bold text-xs w-fit">
+                {activeStep.metric}
+              </span>
             </div>
 
-            {/* Dynamic Metric Bar Chart Columns */}
-            <div className="flex items-end justify-between gap-2.5 h-36 pt-4 border-t border-border/60">
-              {currentStep.bars.map((height, idx) => (
-                <div key={idx} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                  <motion.div
-                    key={`${currentStep.id}-${idx}`}
-                    initial={{ height: 0 }}
-                    animate={{ height: `${height}%` }}
-                    transition={{ duration: 0.4, delay: idx * 0.04 }}
-                    className="w-full rounded-md bg-gradient-to-t from-neutral-950 via-neutral-800 to-neutral-700 hover:from-black hover:to-neutral-500 transition-colors shadow-2xs"
-                  />
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-sans">
+              <div className="space-y-1.5">
+                <div className="text-xs font-mono font-bold text-neutral-500 uppercase">Architecture Operation</div>
+                <p className="text-sm text-foreground leading-relaxed">
+                  {activeStep.desc}
+                </p>
+              </div>
+
+              <div className="space-y-1.5">
+                <div className="text-xs font-mono font-bold text-neutral-500 uppercase">Implementation Detail</div>
+                <p className="text-sm text-muted leading-relaxed font-mono text-[11px]">
+                  {activeStep.technical}
+                </p>
+              </div>
             </div>
 
           </div>
-
         </div>
 
       </div>
