@@ -30,6 +30,14 @@ const CAPABILITIES = [
   { name: 'IDE Integration', icon: Terminal },
 ];
 
+const PHRASES = [
+  'Understand Codebases.',
+  'Map Architecture.',
+  'Track Dependencies.',
+  'Simulate Blast Radius.',
+  'Ground AI Reasoning.',
+];
+
 const PREVIEW_NODES = [
   { id: '1', name: 'DisputeService', type: 'CLASS', file: 'src/services/dispute.ts', callers: 14, risk: 'HIGH', x: '45%', y: '45%' },
   { id: '2', name: 'calculateRiskScore()', type: 'FUNCTION', file: 'src/rules/risk.ts', callers: 12, risk: 'MEDIUM', x: '18%', y: '22%' },
@@ -40,6 +48,37 @@ const PREVIEW_NODES = [
 export default function Hero() {
   const [activeNodeIdx, setActiveNodeIdx] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+
+  // Dynamic character-by-character typewriter loop
+  const [phraseIdx, setPhraseIdx] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    const targetPhrase = PHRASES[phraseIdx];
+    const typingSpeed = isDeleting ? 40 : 80;
+
+    if (!isDeleting && currentText === targetPhrase) {
+      const pauseTimeout = setTimeout(() => setIsDeleting(true), 2200);
+      return () => clearTimeout(pauseTimeout);
+    }
+
+    if (isDeleting && currentText === '') {
+      setIsDeleting(false);
+      setPhraseIdx((prev) => (prev + 1) % PHRASES.length);
+      return;
+    }
+
+    const timeout = setTimeout(() => {
+      setCurrentText((prev) =>
+        isDeleting
+          ? targetPhrase.substring(0, prev.length - 1)
+          : targetPhrase.substring(0, prev.length + 1)
+      );
+    }, typingSpeed);
+
+    return () => clearTimeout(timeout);
+  }, [currentText, isDeleting, phraseIdx]);
 
   // Automatic subtle node cycling (pauses when user hovers)
   useEffect(() => {
@@ -80,15 +119,21 @@ export default function Hero() {
             <span>AI-POWERED CODE INTELLIGENCE</span>
           </motion.div>
 
-          {/* Main Headline */}
+          {/* 3-Line Headline with Dynamic Character-by-Character Typewriter Loop */}
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-foreground leading-[1.08]"
+            className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-foreground leading-[1.1] min-h-[140px] sm:min-h-[210px]"
           >
-            Understand Your Codebase. <br />
-            <span className="text-neutral-500 font-extrabold">Before You Change It.</span>
+            <span className="inline-block">
+              {currentText}
+              <span className="inline-block w-[3px] h-[0.8em] bg-foreground ml-1 align-middle animate-pulse font-normal" />
+            </span>
+            <br />
+            <span className="text-neutral-900 font-extrabold">Before You Change It.</span>
+            <br />
+            <span className="text-neutral-400 font-bold">All From One Platform.</span>
           </motion.h1>
 
           {/* Supporting Description */}
