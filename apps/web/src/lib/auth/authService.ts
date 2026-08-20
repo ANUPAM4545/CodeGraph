@@ -2,9 +2,10 @@ import { apiClient } from '../api/client';
 
 export interface User {
   id: string;
-  name?: string;
   username?: string;
-  email: string;
+  email?: string;
+  name?: string;
+  avatar_url?: string;
 }
 
 export interface Organization {
@@ -14,16 +15,28 @@ export interface Organization {
 }
 
 class AuthService {
-  async loginWithGithub() {
+  async loginWithGithub(redirectUrl?: string) {
+    if (typeof window !== 'undefined' && redirectUrl) {
+      sessionStorage.setItem('auth_redirect', redirectUrl);
+    }
     const res = await apiClient.get('/auth/login/github');
-    if (res.url) {
+    if (res?.url) {
       window.location.href = res.url;
     }
   }
 
-  async handleCallback(code: string, state: string): Promise<void> {
-    // Exchange code for cookie session
-    await apiClient.post('/auth/callback/github', { code, state });
+  async loginWithGoogle(redirectUrl?: string) {
+    if (typeof window !== 'undefined' && redirectUrl) {
+      sessionStorage.setItem('auth_redirect', redirectUrl);
+    }
+    const res = await apiClient.get('/auth/login/google');
+    if (res?.url) {
+      window.location.href = res.url;
+    }
+  }
+
+  async handleCallback(code: string, state: string, provider: 'github' | 'google' = 'github'): Promise<void> {
+    await apiClient.post(`/auth/callback/${provider}`, { code, state });
   }
 
   async createOrganization(name: string): Promise<Organization> {
@@ -40,10 +53,16 @@ class AuthService {
     }
   }
 
-  logout() {
-    // Let's assume an endpoint that clears cookie
-    apiClient.post('/auth/logout').catch(() => {});
-    window.location.href = '/';
+  async logout(): Promise<void> {
+    try {
+      await apiClient.post('/auth/logout');
+    } catch (e) {
+      // Ignore network errors during logout
+    }
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('auth_redirect');
+      window.location.href = '/login';
+    }
   }
 }
 

@@ -32,11 +32,16 @@ class Settings(BaseSettings):
     ENCRYPTION_KEY: str = "super_secret_32_byte_encryption_key_change_in_prod=" # Must be 32 URL-safe base64-encoded bytes
     ALLOW_ANONYMOUS_DEV: bool = False
 
-    # GitHub
+    # GitHub OAuth
     GITHUB_CLIENT_ID: str = "your_github_client_id"
     GITHUB_CLIENT_SECRET: str = "your_github_client_secret"
-    GITHUB_REDIRECT_URI: str = "http://localhost:3000/api/auth/callback"
+    GITHUB_REDIRECT_URI: str = "http://localhost:3000/auth/callback"
     GITHUB_TOKEN: Optional[str] = None
+
+    # Google OAuth
+    GOOGLE_CLIENT_ID: str = "your_google_client_id"
+    GOOGLE_CLIENT_SECRET: str = "your_google_client_secret"
+    GOOGLE_REDIRECT_URI: str = "http://localhost:3000/auth/callback"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 

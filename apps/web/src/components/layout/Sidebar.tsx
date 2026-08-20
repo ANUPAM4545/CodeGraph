@@ -8,13 +8,14 @@ import {
   Database, 
   BarChart, 
   Settings, 
-  CreditCard 
+  CreditCard,
+  LogOut 
 } from 'lucide-react';
 import { useAuth } from '../../lib/auth/context';
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, organization } = useAuth();
+  const { user, organization, logout } = useAuth();
 
   const navItems = [
     { name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
@@ -29,8 +30,8 @@ export default function Sidebar() {
 
   const orgDisplayName = organization?.name || 'Personal Workspace';
   const orgRoleOrPlan = organization ? 'Enterprise Plan' : 'Developer Plan';
-  const userDisplayName = user?.username || user?.name || 'Anupam Singh';
-  const userEmail = user?.email || 'anupam@codegraph.com';
+  const userDisplayName = user?.name || user?.username || 'Authenticated Developer';
+  const userEmail = user?.email || 'user@codegraph.dev';
   const avatarLetter = (userDisplayName[0] || 'A').toUpperCase();
 
   const isItemActive = (item: any) => {
@@ -111,14 +112,28 @@ export default function Sidebar() {
       
       {/* User Footer */}
       <div className="p-3 border-t border-border">
-        <div className="flex items-center space-x-2.5 p-1.5 rounded-lg hover:bg-surface transition-colors cursor-pointer">
-          <div className="w-7 h-7 bg-foreground rounded-full flex items-center justify-center text-background font-bold text-xs flex-shrink-0">
-            {avatarLetter}
+        <div className="flex items-center justify-between p-1.5 rounded-lg hover:bg-surface transition-colors">
+          <div className="flex items-center space-x-2.5 min-w-0">
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt={userDisplayName} className="w-7 h-7 rounded-full object-cover shrink-0 border border-border" />
+            ) : (
+              <div className="w-7 h-7 bg-foreground rounded-full flex items-center justify-center text-background font-bold text-xs flex-shrink-0">
+                {avatarLetter}
+              </div>
+            )}
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-medium leading-tight text-foreground truncate">{userDisplayName}</span>
+              <span className="text-[10px] text-muted truncate">{userEmail}</span>
+            </div>
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs font-medium leading-tight text-foreground truncate">{userDisplayName}</span>
-            <span className="text-[10px] text-muted truncate">{userEmail}</span>
-          </div>
+          
+          <button 
+            onClick={logout}
+            title="Log Out"
+            className="p-1.5 text-muted hover:text-red-600 rounded hover:bg-red-50 transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+          </button>
         </div>
       </div>
     </aside>
